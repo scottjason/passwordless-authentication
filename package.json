@@ -1,0 +1,40 @@
+{
+  "name": "passwordless-authentication",
+  "version": "0.1.0",
+  "private": true,
+  "author": "Scott Jason",
+  "scripts": {
+    "dev": "next dev --experimental-https",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "keywords": [
+    "passwordless",
+    "authentication",
+    "react",
+    "nextjs",
+    "typescript",
+    "nodemailer",
+    "tailwindcss"
+  ],
+  "dependencies": {
+    "bottleneck": "^2.19.5",
+    "next": "14.1.4",
+    "nodemailer": "^6.9.13",
+    "react": "^18",
+    "react-dom": "^18"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/nodemailer": "^6.4.14",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10.0.1",
+    "eslint": "^8",
+    "eslint-config-next": "14.1.4",
+    "postcss": "^8",
+    "tailwindcss": "^3.3.0",
+    "typescript": "^5"
+  }
+}
