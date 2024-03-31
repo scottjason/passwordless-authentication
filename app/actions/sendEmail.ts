@@ -8,7 +8,7 @@ const EMAIL_REGEX: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const generateOTP = () => {
   let otp = '';
-  const length = 6 as const;
+  const length = 6;
   for (let i = 0; i < length; i++) {
     otp += randomInt(0, 10).toString();
   }
@@ -43,36 +43,44 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendEmail = async (
-  state: Response | { errors: { email: string } },
-  form: FormData
+  state: { errors: { email: string } } | Response,
+  form?: FormData
 ): Promise<{ errors: { email: string } } | Response> => {
+  if (!form) {
+    return { ...state };
+  }
+
   const email = form.get('email') as string;
-  const isValidEmail = EMAIL_REGEX.test(email);
-  if (!isValidEmail) {
+  if (!EMAIL_REGEX.test(email)) {
     return {
       errors: {
         email: 'Please enter a valid email',
       },
     };
-  } else {
-    const mailOptions = {
-      from: FROM_MAIL,
-      to: email,
-      subject: 'Your One-Time Secure Access Code ',
-      html: generateEmailContent(),
-    };
-    await limiter.schedule(
-      () =>
-        new Promise(() => {
-          transporter.sendMail(mailOptions, (error: unknown) => {
+  }
+
+  try {
+    await limiter.schedule(() => {
+      return new Promise((resolve, reject) => {
+        transporter.sendMail(
+          {
+            from: FROM_MAIL,
+            to: email,
+            subject: 'Your One-Time Secure Access Code',
+            html: generateEmailContent(),
+          },
+          (error, info) => {
             if (error) {
-              return { ...state, errors: { email: 'Failed to send email' } };
+              reject({ errors: { email: 'Failed to send email' } });
             } else {
-              return { ...state };
+              resolve(info);
             }
-          });
-        })
-    );
+          }
+        );
+      });
+    });
+  } catch (error) {
+    return { errors: { email: 'Failed to send email due to an error' } };
   }
   return { ...state };
 };
