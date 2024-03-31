@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "author": "Scott Jason",
+  "engines": {
+    "node": "^18"
+  },
   "scripts": {
     "dev": "next dev --experimental-https",
     "build": "next build",
