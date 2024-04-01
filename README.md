@@ -1,6 +1,8 @@
-# Passwordless Authentication App
+# Passwordless Authentication (work in progress)
 
-This passwordless authentication app is built on Next.js, utilizing NodeMailer for one-time password (OTP) verification. It offers a secure, user-friendly authentication method without traditional passwords. Specifically, this app leverages Next.js server actions, enabling direct server-side function calls from the client, simplifying the architecture by eliminating the need for separate API route handlers. The app employs `pnpm` for package management, enhancing performance and efficiency.
+This passwordless authentication app is built on Next.js, utilizing NodeMailer for one-time password (OTP) verification. It offers a secure, user-friendly authentication method without traditional passwords.
+
+Specifically, this app leverages Next.js server actions, enabling direct server-side function calls from the client, simplifying the architecture by eliminating the need for separate API route handlers. The app employs `pnpm` for package management, enhancing performance and efficiency.
 
 ## Features
 
