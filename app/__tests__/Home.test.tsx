@@ -3,7 +3,9 @@ import Home from '../page';
 
 jest.mock('react-dom', () => ({
   ...jest.requireActual('react-dom'),
-  useFormState: jest.fn().mockReturnValue([{ email: '', errors: { email: '' } }, () => {}]),
+  useFormState: jest
+    .fn()
+    .mockReturnValue([{ email: '', errors: { email: '' } }, () => {}]),
 }));
 
 describe('Home Component', () => {

@@ -5,7 +5,8 @@ import { randomInt } from 'crypto';
 import { dbConnect } from '../../lib/db';
 
 const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, FROM_MAIL } = process.env;
-const VALID_EMAIL_REGEX: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const VALID_EMAIL_REGEX: RegExp =
+  /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const generateOTP = () => {
   let otp = '';

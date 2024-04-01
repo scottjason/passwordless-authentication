@@ -3,7 +3,9 @@ import mongoose from 'mongoose';
 const { DATABASE_URL } = process.env;
 
 if (!DATABASE_URL) {
-  throw new Error('Please define the DATABASE_URL environment variable inside .env.local');
+  throw new Error(
+    'Please define the DATABASE_URL environment variable inside .env.local'
+  );
 }
 
 let cached = global.mongoose;
@@ -22,9 +24,11 @@ async function dbConnect(): Promise<mongoose.Connection> {
       bufferCommands: false,
     };
 
-    cached.promise = mongoose.connect(DATABASE_URL as string, opts).then((mongoose) => {
-      return mongoose.connection;
-    });
+    cached.promise = mongoose
+      .connect(DATABASE_URL as string, opts)
+      .then((mongoose) => {
+        return mongoose.connection;
+      });
   }
   cached.connection = await cached.promise;
   return cached.connection;
