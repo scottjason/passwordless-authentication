@@ -2,6 +2,7 @@
 import nodemailer from 'nodemailer';
 import Bottleneck from 'bottleneck';
 import { randomInt } from 'crypto';
+import { dbConnect } from '../../lib/db';
 
 const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, FROM_MAIL } = process.env;
 const VALID_EMAIL_REGEX: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -50,6 +51,7 @@ export const sendEmail = async (
   if (!form) {
     return { ...state };
   }
+  console.log('sendEmail');
 
   const email = form.get('email') as string;
   if (!VALID_EMAIL_REGEX.test(email)) {
@@ -59,6 +61,8 @@ export const sendEmail = async (
       },
     };
   }
+
+  await dbConnect();
 
   try {
     transporter.verify(async (error) => {
