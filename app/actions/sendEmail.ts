@@ -51,7 +51,6 @@ export const sendEmail = async (
   if (!form) {
     return { ...state };
   }
-  console.log('sendEmail');
 
   const email = form.get('email') as string;
   if (!VALID_EMAIL_REGEX.test(email)) {
