@@ -54,7 +54,7 @@ Ensure you have the following installed before starting:
 - To run the development server with HTTPS (utilizing Next.js's `mkcert`):
 
   ```bash
-  pnpm run dev
+  pnpm dev
   ```
 
   This command starts the app on a secure HTTPS connection locally. You can then open your browser and navigate to https://localhost:3000 to run the app. The first time you access the app, you may need to accept the self-signed certificate in your browser.

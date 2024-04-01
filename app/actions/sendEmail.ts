@@ -4,7 +4,7 @@ import Bottleneck from 'bottleneck';
 import { randomInt } from 'crypto';
 
 const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, FROM_MAIL } = process.env;
-const EMAIL_REGEX: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const VALID_EMAIL_REGEX: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const generateOTP = () => {
   let otp = '';
@@ -26,15 +26,16 @@ const generateEmailContent = () => {
 };
 
 const limiter = new Bottleneck({
-  reservoir: 500,
-  reservoirRefreshAmount: 500,
-  reservoirRefreshInterval: 24 * 60 * 60 * 1000,
+  maxConcurrent: 1, // Ensures that only 1 email is sent at a time.
+  reservoir: 250, // Total requests allowed per day.
+  reservoirRefreshAmount: 250,
+  reservoirRefreshInterval: 24 * 60 * 60 * 1000, // Refreshes daily to replenish 250 requests.
+  minTime: 6000, // Allows for 10 requests per minute (6000 milliseconds between each request).
 });
 
 const transporter = nodemailer.createTransport({
-  // @ts-ignore
   host: SMTP_HOST,
-  port: SMTP_PORT,
+  port: Number(SMTP_PORT),
   secure: false,
   auth: {
     user: SMTP_USER,
@@ -51,7 +52,7 @@ export const sendEmail = async (
   }
 
   const email = form.get('email') as string;
-  if (!EMAIL_REGEX.test(email)) {
+  if (!VALID_EMAIL_REGEX.test(email)) {
     return {
       errors: {
         email: 'Please enter a valid email',
@@ -60,26 +61,31 @@ export const sendEmail = async (
   }
 
   try {
-    await limiter.schedule(() => {
-      return new Promise((resolve, reject) => {
-        transporter.sendMail(
-          {
-            from: FROM_MAIL,
-            to: email,
-            subject: 'Your One-Time Secure Access Code',
-            html: generateEmailContent(),
-          },
-          (error, info) => {
-            if (error) {
-              reject({ errors: { email: 'Failed to send email' } });
-            } else {
-              resolve(info);
+    transporter.verify(async (error) => {
+      if (error) {
+        return { errors: { email: 'Failed to connect to SMTP server' } };
+      }
+      await limiter.schedule(() => {
+        return new Promise((resolve, reject) => {
+          transporter.sendMail(
+            {
+              from: FROM_MAIL,
+              to: email,
+              subject: 'Your One-Time Secure Access Code',
+              html: generateEmailContent(),
+            },
+            (error, info) => {
+              if (error) {
+                reject({ errors: { email: 'Failed to send email' } });
+              } else {
+                resolve(info);
+              }
             }
-          }
-        );
+          );
+        });
       });
     });
-  } catch (error) {
+  } catch (_) {
     return { errors: { email: 'Failed to send email due to an error' } };
   }
   return { ...state };
