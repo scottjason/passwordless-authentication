@@ -47,6 +47,7 @@ Ensure you have the following installed before starting:
    SMTP_USER=your_smtp_user
    SMTP_PASS=your_smtp_password
    FROM_MAIL=your_from_email_address
+   DATABASE_URL=your_database_url
    ```
 
    These are essential for configuring NodeMailer to send OTP emails.
