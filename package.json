@@ -4,7 +4,7 @@
   "private": true,
   "author": "Scott Jason",
   "engines": {
-    "node": "^18"
+    "node": "^20"
   },
   "scripts": {
     "dev": "next dev --experimental-https",
